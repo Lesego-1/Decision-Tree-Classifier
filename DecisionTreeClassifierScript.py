@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
 from sklearn.datasets import load_breast_cancer
 from sklearn.feature_selection import RFE
+from sklearn.metrics import roc_curve, roc_auc_score
 
 # Import dataset
 cancer_data = load_breast_cancer()
@@ -80,6 +81,9 @@ best_clf.fit(X_train_selected, y_train)
 # Predict Test values
 y_test_pred = best_clf.predict(X_test_selected)
 
+# Get y_pred probabilities for ROC evaluation
+y_pred_prob = best_clf.predict_proba(X_test_selected)[:, 1]
+
 # Calculate Accuracy
 accuracy = accuracy_score(y_test, y_test_pred)
 accuracy_percentage = round(accuracy*100, 2)
@@ -101,6 +105,17 @@ plt.title("Confusion Matrix")
 plt.xlabel("Actual Values")
 plt.ylabel("Predicted Values")
 plt.show()
+
+# Calculate ROC Curve
+fpr, tpr, thresholds = roc_curve(y_test, y_pred_prob)
+
+# Plot the ROC Curve
+plt.figure(figsize=(12,6))
+plt.plot(fpr, tpr, label="ROC Curve", color="red")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.legend()
+plt.plot()
 
 # Print importance of features
 feature_importances = pd.DataFrame(best_clf.feature_importances_, index=selected_features, columns=['importance']).sort_values('importance', ascending=False)
