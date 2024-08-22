@@ -117,6 +117,10 @@ plt.ylabel("True Positive Rate")
 plt.legend()
 plt.plot()
 
+# Calculate ROC-AUC
+auc = roc_auc_score(y_test, y_pred_prob)
+print(f"AUC Score: {round(auc, 2)}")
+
 # Print importance of features
 feature_importances = pd.DataFrame(best_clf.feature_importances_, index=selected_features, columns=['importance']).sort_values('importance', ascending=False)
 print(feature_importances)
